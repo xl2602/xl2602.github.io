@@ -1,72 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <title>{{ page.title }} | lucyxlu.com</title>
-
-    <link rel="stylesheet" href="/css/base.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/css/skeleton.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/css/tables.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/css/pygment.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/css/layout.css" type="text/css" media="screen, projection">
-
-    <script type="text/javascript" async="" src="/js/jquery-3.2.1.min.js"></script>
-    <!--<script type="text/javascript" async="" src="/js/tether.min.js"></script>-->
-
-    <link href="/css/font-awesome.min.css" rel="stylesheet">
-
-</head>
-
+{% include head.html %}
 <body>
-<div class="container">
-    <div class="three columns">
-        <a href="/">
-            <img src="/images/akira.png" alt="Lucy Lu" id="selfie">
-        </a>
-        <h1 id="logo" class="remove-bottom">
-            <a href="/">Lucy Lu</a>
-        </h1>
 
-
-    <div id="bio-block">
-        <p class="bio">Passionate in data science, visualization & game, but not necessarily in that order.</p>
-    </div>
-
-
-        <p>
-        <div class="ll-social" id="social-block">
-            <a class="social" href="https://github.com/xl2602">
-                <i class="fa fa-github fa-lg" aria-hidden="true" ></i>
-            </a>
-            <a class="social" href="https://www.linkedin.com/in/lucylx" >
-                <i class="fa fa-linkedin-square fa-lg" aria-hidden="true" ></i>
-            </a>
-            <a class="social" href="mailto:lucy.lxus@gmail.com" >
-                <i class="fa fa-envelope fa-lg" aria-hidden="true" ></i>
-            </a>
-        </div>
-        </p>
-
-
-
-        <nav id="nav-block">
-            <ul>
-                <li><a class="nav" href="/">Blog</a></li>
-                <li><a class="nav" href="/projects.html">Projects</a></li>
-                <!--<li><a class="nav" href="http://github.com/xl2602">Code</a></li>-->
-            </ul>
-        </nav>
-
-        <p></p>
-
-
-    </div>
-    <div class="twelve columns offset-by-one">
-        {{ content }}
-    </div>
-</div>
+  <div class="wrapper">
+    {{ content }}
+  </div>
+  
+  {% include analytics.html %}
 </body>
 </html>

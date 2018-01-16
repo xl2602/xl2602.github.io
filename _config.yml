@@ -1,14 +1,48 @@
-lsi: false
-#highlighter: rouge
-safe: true
-url: 'http://lucyxlu.com'
-markdown: kramdown
-redcarpet:
-  extensions:
-    - tables
+title: Lucy Lu | lucyxlu.com
+description: > # this means to ignore newlines until "baseurl:"
+  Write an awesome description for your new site here. You can edit this
+  line in _config.yml. It will appear in your document head meta (for
+  Google search results) and in your feed.xml site description.
+permalink: ':title/'
+#baseurl: "/flexible-jekyll" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+site-twitter: #if your site has a twitter account, enter it here
 
-exclude:
- - Gemfile
- - Gemfile.lock
- - README.md
- - sass
+# Author Settings
+author: Lucy Lu # add your name
+author-img: akira.png # add your photo
+about-author: Passionate in data science, visualization & game, but not necessarily in that order :) # add description
+twitter: # add your Twitter handle
+facebook: # add your Facebook handle
+github: xl2602 # add your Github handle
+linkedin: https://www.linkedin.com/in/lucylx # add your Linkedin handle
+email: lucy.lxus@gmail.com # add your Email address
+wechat: # add your wechat account
+
+# Disqus
+discus-identifier: lucyxlu # add your discus identifier
+
+# Tracker
+analytics: # Google Analytics
+
+# Build Settings
+markdown: kramdown
+#markdown: redcarpet
+plugins:
+  - jekyll-sitemap
+  - jekyll-paginate
+  - jemoji
+
+# Sidebar Nav
+#urls:
+#    - text: Tags
+#      url: /tags/
+#    - text: Projects
+#      url: /projects/
+
+
+paginate: 5
+paginate_path: "/page/:num"
+
+exclude: ["node_modules", "gulpfile.js", "package.json", "yarn.lock"]
