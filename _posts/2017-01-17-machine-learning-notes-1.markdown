@@ -53,7 +53,7 @@ $$
 ### Objective
 
 $$
-\mathcal{L}= \sum_{i=1}^n(y_i-f(x_i;w))^2 = \| y-Xw \|
+\mathcal{L}= \sum_{i=1}^n(y_i-f(x_i;w))^2 = \| y-Xw \|^2
 $$
 
 ### Solution
@@ -93,8 +93,77 @@ w_{ML}
 - $$ \mathbb{E}\left[w_{ML} \right] = w $$. $$w_{ML}$$ is an unbiased estimate of $$w$$.
 - $$ Var \left[w_{ML} \right] = \sigma^2(X^TX)^{-1} $$. The values of $$w_{ML}$$ are very sensitive to the measured data $$y$$
 
+- The values in $$w_{ML}$$ may be huge. In general, we often constrain the model parameters $$w$$. According to the regularization scheme, we have Ridge, Lasso etc....
 
-# Ridge Regression
+# Ridge Regression - L2
+
+### Objective
+
+$$
+\mathcal{L}= \| y-Xw \|^2 + \lambda \| w \|^2
+$$
+
+### Solution
+
+$$ \begin{align}
+w_{RR} &= arg \min_{w} \mathcal{L} = arg \min_{w} \| y-Xw \|^2 + \lambda \| w \|^2  \\
+&= (\lambda I + X^TX)^{-1}X^Ty
+\end{align} $$
+
+- $$\lambda$$ is a regularization parameter
+- $$ \| w \|^2 $$ is a penalty function that penalizes large values in $$w$$.
+- $$\lambda \rightarrow 0: w_{RR} \rightarrow w_{LS} \qquad \lambda \rightarrow \infty: w_{RR} \rightarrow \vec{0}$$.
+- Ridge Regression requires data preprocessing: subtract mean and divide by standard deviations
+
+- $$ \mathbb{E}\left[w_{RR} \right] = (\lambda I + X^TX)^{-1}X^TXw $$. $$w_{RR}$$ is an biased estimate of $$w$$.
+- $$ Var \left[w_{RR} \right] = \sigma^2Z(X^TX)^{-1}Z^T $$, where $$Z=(I + \lambda (X^TX)^{-1})^{-1}$$ is positive. The variance shrinks.
+
+
+### Probabilistic View
+
+#### Bayes Rule
+> $$ \underbrace{p(w | X, y)}_{posterior} = \frac{\overbrace{p(X, y|w)}^{likelihood} \times \overbrace{p(w)}^{prior}}{\underbrace{p(X|y)}_{evidence}} $$
+
+#### Model Assumption
+- The likelihood model: $$y \sim N(Xw, \sigma^2I)$$
+- Assume the prior: $$w \sim N(0, \lambda^{-1}I), \quad \text{then } p(w) = \Big( \frac{\lambda}{2\pi} \Big)^{\frac{d}{2}}e^{-\frac{\lambda}{2}w^Tw}$$
+
+#### Maximum A Poseriori (MAP)
+Seeks the most probable value $$w$$ under the posterior
+
+$$ \begin{align}
+w_{MAP} &= arg \max_{w} \ln p(w|y, X)\\
+&= arg \max_{w} \ln \frac{p(y|w, X)p(w)}{p(y|X)}\\
+&= arg \max_{w} \ln p(y|w, X) + \ln p(w) - \ln p(y|X)\\
+&= (\lambda\sigma^2I+X^TX)^{-1}X^Ty
+\end{align} $$
+
+- $$\ln p(y\mid X)$$ does not involve $$w$$, so we can ignore it (when calculating the gradient, it becomes 0.
+- $$w_{MAP} = w_{RR}$$ .
+
+
+### Ridge Regression vs Least Squares
+- The Ridge solutions shrinks toward zero $$ \| w_{RR} \| \leq \| w_{LS} \| \text{. Since } w_{RR} = (\lambda I + X^TX)^{-1}X^Ty = \cdots = (\lambda(X^TX)^{-1} + I)^{-1}w_{LS}$$
+- Least squares solution: unbiased, but potentially high variance, but Ridge regression solution: biased, but lower variance than LS.
+- RR maximizes the posterior, while LS maximizes the likelihood.
+- Both ML and MAP are referred to as point estimates of the model parameters that finds a specific value (point) of the vector $$w$$ that maximize the objective function
+
+- LS and RR not suited well for high-dimensional data, since they weight all dimensions without favoring subset of dimensions.
+
+
+# LASSO - L1
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
