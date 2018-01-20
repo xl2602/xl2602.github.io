@@ -7,7 +7,7 @@ tags: [machine learning, regression] # add tag
 categories: machine-learning
 ---
 
-These are course notes for COMS4721 machine learning course taught by Professor John Paisley ay Columbia University.
+These are course notes for COMS4721 machine learning course taught by Professor John Paisley at Columbia University.
 
 
 # Notation
@@ -151,7 +151,117 @@ w_{MAP} &= arg \max_{w} \ln p(w|y, X)\\
 - LS and RR not suited well for high-dimensional data, since they weight all dimensions without favoring subset of dimensions.
 
 
-# LASSO - L1
+# Least Absolute Shrinkage and Selection Operator (LASSO) - L1
+
+### Objective
+
+$$
+\mathcal{L}= \| y-Xw \|^2_2 + \lambda \| w \|_1
+$$
+
+### Solution
+
+$$
+w_{lasso} = arg \min_{w} \| y-Xw \|^2_2 + \lambda \| w \|_1  \\
+\text{where } \| w \|_1 = \sum^d_{j=1} \lvert w_j\rvert
+$$
+
+- No local optimal solution
+- Natural feature selection
+- For correlated features, Lasso is likely to pick one of these at random.
+
+
+# $$l_p $$ Regression
+
+#### $$ l_p $$-norms
+
+$$
+\| w \|_p = \Big( \sum^d_{j=1} \lvert w_j\rvert^p \Big)^{\frac{1}{p}} \qquad \text{for } 0 < p \leq \infty
+$$
+
+#### $$ l_p $$-regression
+
+$$
+w_{l_p} := arg \min_{w} \| y-Xw \|^2_2 + \lambda \| w \|_p^p  \\
+$$
+
+![lp]({{site.baseurl}}/assets/img/ml-0117-lp.png)
+
+#### Solution of $$l_p$$ problem
+- $$p<1$$ We can only find an approximate solution (i.e., the best in its “neighborhood”) using iterative algorithms.
+- $$p \geq 1, p \neq 2$$ By “convex optimization”. (no “local optimal solutions”, but the true solution can be found exactly using iterative algorithms.
+- $$p = 2$$ Ridge.
+
+$$
+\begin{array} {lccl}
+\text{Method} & \text{Good-o-fit} & \text{penalty} & \text{Solution method}\\
+\hline
+\text{Least squares} & \| y-Xw \|^2_2 & \text{none} & \text{Analytic solution exists if }X^TX \text{ invertible} \\
+\text{Ridge regression} & \| y-Xw \|^2_2 & \| w \|_2^2 & \text{Analytic solution exists always}\\
+\text{LASSO} & \| y-Xw \|^2_2 & \| w \|_1 & \text{Numerical optimization to find solution}\\
+\end{array}
+$$
+
+
+# Elastic Net
+
+### Objective
+
+$$
+\mathcal{L}= \| y-Xw \|^2_2 + \lambda_1 \| w \|_1 + \lambda_2 \| w \|_2^2
+$$
+
+* This combination allows for learning a sparse model where few of the weights are non-zero like Lasso, while still maintaining the regularization properties of Ridge. 
+* We control the convex combination of L1 and L2 using the l1_ratio parameter.
+* Elastic-net is useful when there are multiple features which are correlated with one another. Lasso is likely to pick one of these at random, while elastic-net is likely to pick both.
+
+
+# RANdom SAmple Consensus (RANSAC) 
+
+RANSAC achieves its goal by repeating the following steps:
+1. Select a random subset of the original data. Call this subset the hypothetical inliers.
+2. A model is fitted to the set of hypothetical inliers.
+3. All other data are then tested against the fitted model. Those points that fit the estimated model well, according to some model-specific loss function, are considered as part of the consensus set.
+4. The estimated model is reasonably good if sufficiently many points have been classified as part of the consensus set.
+5. Afterwards, the model may be improved by reestimating it using all members of the consensus set.
+###### referenced from Wikipedia (http://en.wikipedia.org/wiki/RANSAC)
+
+$$
+\begin{array} {ll}
+\text{Probability of choosing an inlier} & P(\text{inlier}) \equiv w \\
+\text{Probability of choosing a sample subset with no outliers} & P(\text{subset with no outlier}) \equiv w ^n \\
+\text{Probability of choosing a sample subset with outliers} & P(\text{subset with outlier(s)}) \equiv 1 - w ^n \\
+\text{Probability of choosing a subset with outliers in all N iterations} & P(\text{N subset with outlier(s)}) \equiv (1 - w ^n)^N \\
+\text{Probability of an unsuccesful run} & P(\text{fail}) \equiv (1 - w ^n)^N \\
+\text{Probability of an succesful run} & P(\text{success}) \equiv 1-(1 - w ^n)^N \\
+\end{array}
+$$
+
+Expected Number of iterations
+$$
+N = \frac{\log (1- p(success))}{\log(1-w^n)}
+$$
+###### referenced from http://www.math-info.univ-paris5.fr/~lomn/Cours/CV/SeqVideo/Material/RANSAC-tutorial.pdf
+
+- Typically $$ p$$ set to 0.99
+- we do not know the ratio of outliers in our data set
+
+
+# Huber Regressor
+### Huber Loss
+
+
+
+
+
+> ## Resources:
+- Slides of COMS4721 machine learning course taught by Professor John Paisley at Columbia University.
+- Overview of the RANSAC Algorithm, http://www.cse.yorku.ca/~kosta/CompVis_Notes/ransac.pdf
+- Scikit-learn document, http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.RANSACRegressor.html
+- http://www.math-info.univ-paris5.fr/~lomn/Cours/CV/SeqVideo/Material/RANSAC-tutorial.pdf
+- https://en.wikipedia.org/wiki/Random_sample_consensus
+- https://en.wikipedia.org/wiki/Huber_loss
+
 
 
 
