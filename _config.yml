@@ -33,6 +33,10 @@ plugins:
   - jekyll-sitemap
   - jekyll-paginate
   - jemoji
+#  - jekyll/scholar
+
+#scholar:
+#  style: mla
 
 # Sidebar Nav
 #urls:

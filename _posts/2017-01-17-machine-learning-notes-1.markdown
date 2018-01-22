@@ -7,7 +7,7 @@ tags: [machine learning, regression] # add tag
 categories: machine-learning
 ---
 
-These are course notes for COMS4721 machine learning course taught by Professor John Paisley at Columbia University.
+This is my review notes base on the two machine learning courses I took at Columbia: COMS4721 Machine Learning for Data Science taught by Professor John Paisley and COMSW4995 Applied Machine Learning taught by Professor Andreas Mueller. Most materials are referenced from class slides.
 
 
 # Notation
@@ -46,7 +46,7 @@ y_{new} \approx x_{new}^Tw_{LS}
 $$
 
 ### MTH ORDER
-![mth-order]({{site.baseurl}}/assets/img/ml-0117-mth-order.png)
+![mth-order]({{site.baseurl}}/assets/img/ml/ml-0117-mth-order.png)
 
 # Least Squares
 
@@ -185,7 +185,7 @@ $$
 w_{l_p} := arg \min_{w} \| y-Xw \|^2_2 + \lambda \| w \|_p^p  \\
 $$
 
-![lp]({{site.baseurl}}/assets/img/ml-0117-lp.png)
+![lp]({{site.baseurl}}/assets/img/ml/ml-0117-lp.png)
 
 #### Solution of $$l_p$$ problem
 - $$p<1$$ We can only find an approximate solution (i.e., the best in its “neighborhood”) using iterative algorithms.
@@ -218,50 +218,82 @@ $$
 
 # RANdom SAmple Consensus (RANSAC) 
 
-RANSAC achieves its goal by repeating the following steps:
-1. Select a random subset of the original data. Call this subset the hypothetical inliers.
+RANSAC achieves its goal by repeating the following steps<sup>[[1]](http://en.wikipedia.org/wiki/RANSAC)</sup>:
+1. Select a random subset of the original data (minimum size to build a model). Call this subset the hypothetical inliers.
 2. A model is fitted to the set of hypothetical inliers.
 3. All other data are then tested against the fitted model. Those points that fit the estimated model well, according to some model-specific loss function, are considered as part of the consensus set.
 4. The estimated model is reasonably good if sufficiently many points have been classified as part of the consensus set.
 5. Afterwards, the model may be improved by reestimating it using all members of the consensus set.
-###### referenced from Wikipedia (http://en.wikipedia.org/wiki/RANSAC)
+
+
+RANSAC is
+- more robust to outliers
+- more common in computer vision tasks
+
+<!-- $$ -->
+<!-- \begin{array} {ll} -->
+<!-- \text{Probability of choosing an inlier} & P(\text{inlier}) \equiv w \\ -->
+<!-- \text{Probability of choosing a sample subset with no outliers} & P(\text{subset with no outlier}) \equiv w ^n \\ -->
+<!-- \text{Probability of choosing a sample subset with outliers} & P(\text{subset with outlier(s)}) \equiv 1 - w ^n \\ -->
+<!-- \text{Probability of choosing a subset with outliers in all N iterations} & P(\text{N subset with outlier(s)}) \equiv (1 - w ^n)^N \\ -->
+<!-- \text{Probability of an unsuccesful run} & P(\text{fail}) \equiv (1 - w ^n)^N \\ -->
+<!-- \text{Probability of an succesful run} & P(\text{success}) \equiv 1-(1 - w ^n)^N \\ -->
+<!-- \end{array} -->
+<!-- $$ -->
+
+<!-- Expected Number of iterations -->
+<!-- $$ -->
+<!-- N = \frac{\log (1- p(success))}{\log(1-w^n)} -->
+<!-- $$ -->
+<!-- ###### referenced from http://www.math-info.univ-paris5.fr/~lomn/Cours/CV/SeqVideo/Material/RANSAC-tutorial.pdf -->
+
+<!-- - Typically $$ p$$ set to 0.99 -->
+<!-- - we do not know the ratio of outliers in our data set -->
+
+
+# Huber Loss
 
 $$
-\begin{array} {ll}
-\text{Probability of choosing an inlier} & P(\text{inlier}) \equiv w \\
-\text{Probability of choosing a sample subset with no outliers} & P(\text{subset with no outlier}) \equiv w ^n \\
-\text{Probability of choosing a sample subset with outliers} & P(\text{subset with outlier(s)}) \equiv 1 - w ^n \\
-\text{Probability of choosing a subset with outliers in all N iterations} & P(\text{N subset with outlier(s)}) \equiv (1 - w ^n)^N \\
-\text{Probability of an unsuccesful run} & P(\text{fail}) \equiv (1 - w ^n)^N \\
-\text{Probability of an succesful run} & P(\text{success}) \equiv 1-(1 - w ^n)^N \\
-\end{array}
+\min_{w, \sigma}\sum_{i=1}^n\Big(\sigma+H_m\big(\frac{X_iw-y_i}{\sigma}\big)\sigma\Big)+\alpha\|w\|_2^2 \\
+
+
+H_m(z) =
+\begin{cases}
+z^2,  & \text{if }\lvert z \rvert\ < \epsilon, \\
+2\epsilon\lvert z \rvert - \epsilon^2, & \text{otherwise}
+\end{cases}
 $$
 
-Expected Number of iterations
+![lp]({{site.baseurl}}/assets/img/ml/ml-0117-hl.png){:height="50%" width="50%"}
+
+
+The Huber Regressor optimizes the squared loss for the samples where $$ \Big\lvert \frac{y - Xw}{\sigma}\Big\rvert < \epsilon $$ and the absolute loss for the samples greater than $$ \epsilon$$ , where $$w$$ and $$ \sigma $$ are parameters to be optimized. The parameter $$ \sigma $$ makes sure that if $$ y $$ is scaled up or down by a certain factor, one does not need to rescale $$ \epsilon $$ to achieve the same robustness. Note that this does not take into account the fact that the different features of $$ X $$ may be of different scales<sup>[[2]](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.HuberRegressor.html)</sup>.
+- robust to outliers
+- less sensitive to small errors, but become linear (sensitive) for large errors.
+
+
+# (Regularized) Empirical Risk Minimization
+
 $$
-N = \frac{\log (1- p(success))}{\log(1-w^n)}
+\min_{f\in F}\sum_{i=1}^n\underbrace{L\big( f(x_i), y_i \big)}_{\text{Data Fitting}} + \underbrace{\alpha R(f)}_{\text{Regularization}}
 $$
-###### referenced from http://www.math-info.univ-paris5.fr/~lomn/Cours/CV/SeqVideo/Material/RANSAC-tutorial.pdf
 
-- Typically $$ p$$ set to 0.99
-- we do not know the ratio of outliers in our data set
-
-
-# Huber Regressor
-### Huber Loss
-
-
+To summarize, the machine learning problem can be formalized as minimizing the error on the training set using different loss function (e.g. the squared loss, huber loss), while constraining the model to be simple (control by regularization term).
 
 
 
 > ## Resources:
-- Slides of COMS4721 machine learning course taught by Professor John Paisley at Columbia University.
-- Overview of the RANSAC Algorithm, http://www.cse.yorku.ca/~kosta/CompVis_Notes/ransac.pdf
-- Scikit-learn document, http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.RANSACRegressor.html
-- http://www.math-info.univ-paris5.fr/~lomn/Cours/CV/SeqVideo/Material/RANSAC-tutorial.pdf
-- https://en.wikipedia.org/wiki/Random_sample_consensus
-- https://en.wikipedia.org/wiki/Huber_loss
+<!-- - Slides of COMS4721 Machine Learning for Data Science taught by Professor John Paisley  at Columbia University. -->
+<!-- - Slides of COMSW4995 Applied Machine Learning taught by Professor Andreas Mueller. -->
+1. http://en.wikipedia.org/wiki/RANSAC
+2. http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.HuberRegressor.html
 
+<!-- - Overview of the RANSAC Algorithm, http://www.cse.yorku.ca/~kosta/CompVis_Notes/ransac.pdf -->
+<!-- - Scikit-learn, http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.RANSACRegressor.html -->
+<!-- - http://www.math-info.univ-paris5.fr/~lomn/Cours/CV/SeqVideo/Material/RANSAC-tutorial.pdf -->
+<!-- - https://en.wikipedia.org/wiki/Random_sample_consensus -->
+<!-- - https://en.wikipedia.org/wiki/Huber_loss -->
+<!-- - http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.HuberRegressor.html -->
 
 
 
