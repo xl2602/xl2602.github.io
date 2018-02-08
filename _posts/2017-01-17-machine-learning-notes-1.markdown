@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Machine Learning Notes 1 - Regression
-date: 2017-01-17 00:00:00 +0300
+date: 2017-01-17 00:00:00 -0500
 color: rgba(255,82,82,0.87) #red
 tags: [machine learning, regression] # add tag
 categories: machine-learning
