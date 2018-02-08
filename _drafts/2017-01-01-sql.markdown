@@ -1,0 +1,187 @@
+---
+layout: post
+title: All about MySQL
+date: 2017-01-01 00:00:00 -0500
+color: rgba(30,150,255,0.87) #blue
+tags: [mysql] # add tag
+categories: other
+---
+
+There was one online assignment I received from a company, 5 questions and all about sql. I thought sql tasks were easy, but that assignment proved that I was totally wrong. :( I think that was a remind for me that I need to practice and learn more.
+
+# Syntax
+
+### 1. SELECT Syntax
+
+{% highlight sql %}
+SELECT
+    [ALL | DISTINCT | DISTINCTROW ]
+      [HIGH_PRIORITY]
+      [STRAIGHT_JOIN]
+      [SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]
+      [SQL_CACHE | SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]
+    select_expr [, select_expr ...]
+    [FROM table_references
+      [PARTITION partition_list]
+    [WHERE where_condition]
+    [GROUP BY {col_name | expr | position}
+      [ASC | DESC], ... [WITH ROLLUP]]
+    [HAVING where_condition]
+    [ORDER BY {col_name | expr | position}
+      [ASC | DESC], ...]
+    [LIMIT {[offset,] row_count | row_count OFFSET offset}]
+    [PROCEDURE procedure_name(argument_list)]
+    [INTO OUTFILE 'file_name'
+        [CHARACTER SET charset_name]
+        export_options
+      | INTO DUMPFILE 'file_name'
+      | INTO var_name [, var_name]]
+    [FOR UPDATE | LOCK IN SHARE MODE]]
+{% endhighlight %}
+
+
+### 2. JOIN Syntax
+
+- Defalut is `INNER JOIN`
+
+
+### 3. UNION Syntax
+
+Combine the result from multiple `SELECT` statements into a single result set. It is like stack results from multiple `SELECT` vertically.
+
+{% highlight sql %}
+(SELECT ... )
+UNION [ALL | DISTINCT] (SELECT ... )
+[UNION [ALL | DISTINCT] (SELECT ...) ]
+{% endhighlight %}
+
+- Default behavior is `DISTINCT` which removes duplicates. `ALL` keeps duplicates
+- Since MySQL 5.7, parentheses of `SELECT` statement is enforced.
+
+### 4. Subquery Syntax
+
+A subquery is a `SELECT` statement within another statement. A subquery can return a scalar (a single value), a single row, a single column, or a table (one or more rows of one or more columns)
+
+
+### 5. Expression Syntax
+
+{% highlight sql %}
+expr:
+    expr OR expr
+  | expr || expr
+  | expr XOR expr
+  | expr AND expr
+  | expr && expr
+  | NOT expr
+  | ! expr
+  | boolean_primary IS [NOT] {TRUE | FALSE | UNKNOWN}
+  | boolean_primary
+
+boolean_primary:
+    boolean_primary IS [NOT] NULL
+  | boolean_primary <=> predicate
+  | boolean_primary comparison_operator predicate
+  | boolean_primary comparison_operator {ALL | ANY} (subquery)
+  | predicate
+
+comparison_operator: = | >= | > | <= | < | <> | !=
+
+predicate:
+    bit_expr [NOT] IN (subquery)
+  | bit_expr [NOT] IN (expr [, expr] ...)
+  | bit_expr [NOT] BETWEEN bit_expr AND predicate
+  | bit_expr SOUNDS LIKE bit_expr
+  | bit_expr [NOT] LIKE simple_expr [ESCAPE simple_expr]
+  | bit_expr [NOT] REGEXP bit_expr
+  | bit_expr
+
+bit_expr:
+    bit_expr | bit_expr
+  | bit_expr & bit_expr
+  | bit_expr << bit_expr
+  | bit_expr >> bit_expr
+  | bit_expr + bit_expr
+  | bit_expr - bit_expr
+  | bit_expr * bit_expr
+  | bit_expr / bit_expr
+  | bit_expr DIV bit_expr
+  | bit_expr MOD bit_expr
+  | bit_expr % bit_expr
+  | bit_expr ^ bit_expr
+  | bit_expr + interval_expr
+  | bit_expr - interval_expr
+  | simple_expr
+
+simple_expr:
+    literal
+  | identifier
+  | function_call
+  | simple_expr COLLATE collation_name
+  | param_marker
+  | variable
+  | simple_expr || simple_expr
+  | + simple_expr
+  | - simple_expr
+  | ~ simple_expr
+  | ! simple_expr
+  | BINARY simple_expr
+  | (expr [, expr] ...)
+  | ROW (expr, expr [, expr] ...)
+  | (subquery)
+  | EXISTS (subquery)
+  | {identifier expr}
+  | match_expr
+  | case_expr
+  | interval_expr
+{% endhighlight %}
+
+
+
+# Functions and Operators
+
+* DATEDIFF
+
+{% highlight sql %}
+mysql> SELECT DATEDIFF('2007-12-31','2007-12-30');
+    -> 1
+{% endhighlight %}
+
+
+* `ROUND` and `IFNULL`
+
+{% highlight sql %}
+select
+round(
+    ifnull(
+    (select count(distinct requester_id, accepter_id) from request_accepted as A)
+    /
+    (select count(distinct sender_id, send_to_id) from friend_request as B),
+    0)
+, 2) as accept_rate;
+{% endhighlight %}
+
+###### https://leetcode.com/problems/friend-requests-i-overall-acceptance-rate/description/
+
+
+### null or empty string
+Use function like `MAX` will return `null` instead of empty
+
+{% highlight sql %}
+SELECT MAX(num) AS num
+FROM (
+    SELECT num
+    FROM number
+    GROUP BY num
+    HAVING COUNT(*) = 1
+    ) AS n;
+{% endhighlight %}
+
+
+
+
+select CITY
+from STATION
+where mod(ID, 2) = 0
+
+> ## Resources:
+1. MySQL 5.7 Reference Manual, https://dev.mysql.com/doc/refman/5.7/en
